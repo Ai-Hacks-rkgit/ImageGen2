@@ -116,10 +116,5 @@ def participant_view():
                 save_scores_to_mongodb(name, idx + 1, score)
                 st.write(f"Your similarity score for Image {idx + 1} is: {score:.2f}")
 
-# Main application flow
-mode = st.sidebar.selectbox("Select Mode", ("Participant", "Admin"))
+participant_view()
 
-if mode == "Participant":
-    participant_view()
-elif mode == "Admin":
-    admin_view()
