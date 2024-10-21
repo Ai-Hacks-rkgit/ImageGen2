@@ -11,7 +11,8 @@ from pymongo.mongo_client import MongoClient
 st.markdown(
     """
     <style>
-    .css-1lcbmhc {display: none;}
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
     </style>
     """,
     unsafe_allow_html=True
