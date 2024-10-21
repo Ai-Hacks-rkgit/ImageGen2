@@ -7,6 +7,10 @@ from pymongo.mongo_client import MongoClient
 import bcrypt
 import base64
 
+st.set_page_config(
+    page_title="Ai Hacks ImageGen",
+    page_icon=":sparkles:",  # You can use an emoji
+)
 # Hide the default Streamlit menu
 st.markdown(
     """
@@ -19,10 +23,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.set_page_config(
-    page_title="Ai Hacks ImageGen",
-    page_icon=":sparkles:",  # You can use an emoji
-)
+
 
 hashed_password = b'$2b$12$tAG95vHR3BrGk3.aEx4qjudNfMh0iObUhzejaINe1E0RswdMyxVAa'
 
