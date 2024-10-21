@@ -4,8 +4,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 from pymongo.mongo_client import MongoClient
-
-
+import bcrypt
+import base64
 
 # Hide the default Streamlit menu
 st.markdown(
@@ -19,6 +19,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+hashed_password = b'$2b$12$tAG95vHR3BrGk3.aEx4qjudNfMh0iObUhzejaINe1E0RswdMyxVAa'
+
+def check_password(input_password):
+    return bcrypt.checkpw(input_password.encode('utf-8'), hashed_password)
+
 # MongoDB setup
 uri = "mongodb+srv://aihacks:aihacksimagegen@cluster0.qbdoi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(uri)
@@ -26,13 +31,19 @@ db = client['db1']  # Replace with your database name
 participants_collection = db['participants']  # Replace with your collection name
 
 # Fixed sequence of images and their corresponding actual prompts
-image_prompts = [
-    {"image": "image1.jpg", "prompt": "cute Bird on a white background wool colorful"},
-    {"image": "image2.jpg", "prompt": "drawing on a black background of a fish bowl"},
-    {"image": "image3.jpg", "prompt": "close up of an chinchilla looking at the camera orange background"},
-    {"image": "image4.jpeg", "prompt": "extreme closeup portrait of a high end mecha robot mirrored face shield metallic red and blue glowing eyes dark background"},
-    {"image": "image5.jpeg", "prompt": "Robot Godzilla using chopsticks space rocket The rocket booster fires a yellow plume of fire at its bottom early morning on the beach ocean"}
-]
+image_prompts=[{'image': 'image1.jpg',
+  'prompt': 'Y3V0ZSBCaXJkIG9uIGEgd2hpdGUgYmFja2dyb3VuZCB3b29sIGNvbG9yZnVs'},
+ {'image': 'image2.jpg',
+  'prompt': 'ZHJhd2luZyBvbiBhIGJsYWNrIGJhY2tncm91bmQgb2YgYSBmaXNoIGJvd2w='},
+ {'image': 'image3.jpg',
+  'prompt': 'Y2xvc2UgdXAgb2YgYW4gY2hpbmNoaWxsYSBsb29raW5nIGF0IHRoZSBjYW1lcmEgb3JhbmdlIGJhY2tncm91bmQ='},
+ {'image': 'image4.jpeg',
+  'prompt': 'ZXh0cmVtZSBjbG9zZXVwIHBvcnRyYWl0IG9mIGEgaGlnaCBlbmQgbWVjaGEgcm9ib3QgaXJvbiBtYW4gbWlycm9yZWQgZmFjZSBzaGllbGQgbWV0YWxsaWMgcmVkIGFuZCBibHVlIGdsb3dpbmcgZXllcyBkYXJrIGJhY2tncm91bmQ='},
+ {'image': 'image5.jpeg',
+  'prompt': 'Um9ib3QgR29kemlsbGEgdXNpbmcgY2hvcHN0aWNrcyBzcGFjZSByb2NrZXQgVGhlIHJvY2tldCBib29zdGVyIGZpcmVzIGEgeWVsbG93IHBsdW1lIG9mIGZpcmUgYXQgaXRzIGJvdHRvbSBlYXJseSBtb3JuaW5nIG9uIHRoZSBiZWFjaCBvY2Vhbg=='}]
+
+def decode_prompt(encoded_prompt):
+    return base64.b64decode(encoded_prompt.encode('utf-8')).decode('utf-8')
 
 # Function to calculate similarity between guessed and actual prompts
 def calculate_similarity(guess, actual):
@@ -94,7 +105,7 @@ def participant_view():
             st.image(img_info["image"], caption=f"Describe Image {idx + 1}")
             guessed_prompt = st.text_input(f"Enter your prompt for Image {idx + 1}")
             if st.button(f"Submit for Image {idx + 1}"):
-                actual_prompt = img_info["prompt"]
+                actual_prompt = decode_prompt(img_info["prompt"])
                 score = calculate_similarity(guessed_prompt, actual_prompt)
                 save_scores_to_mongodb(name, idx + 1, score)
                 st.write(f"Your similarity score for Image {idx + 1} is: {score:.2f}")
