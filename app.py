@@ -114,7 +114,7 @@ def participant_view():
                 actual_prompt = decode_prompt(img_info["prompt"])
                 score = calculate_similarity(guessed_prompt, actual_prompt)
                 save_scores_to_mongodb(name, idx + 1, score)
-                st.write(f"Your similarity score for Image {idx + 1} is: {score:.2f}")
+                st.write(f"Score is saved for this image.")
 
 participant_view()
 
