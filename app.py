@@ -31,7 +31,7 @@ def check_password(input_password):
     return bcrypt.checkpw(input_password.encode('utf-8'), hashed_password)
 
 # MongoDB setup
-uri = "mongodb+srv://aihacks:aihacksimagegen@cluster0.qbdoi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = "mongodb+srv://<<PASSWORD>>@cluster0.qbdoi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(uri)
 db = client['db1']  # Replace with your database name
 participants_collection = db['participants']  # Replace with your collection name
